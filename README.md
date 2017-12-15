@@ -20,8 +20,6 @@ Ajax для сниппета FormLister в Evolution CMS
 
 Из настроек фильтра доступен только required. По умолчанию все поля обязательные, но можно для определённых полей указать required.
 
-Пока что не умеет отправлять файлы
-
 ## Пример
 
 ```
@@ -40,19 +38,22 @@ Ajax для сниппета FormLister в Evolution CMS
 	<form class="-visor-no-click">
 		<p>
 			<label for="name">Ваше имя</label>
-			<input type="text" id="name" name="Имя" />
-		</p>
-		<p>
+			<input type="text" id="name" name="name" data-FL-name="Имя" />
+		</p><p>
 			<label for="phone">Ваш телефон</label>
-			<input type="tel" id="phone" name="Телефон" required />
-		</p>
-		<p>
+			<input type="tel" id="phone" name="phone" data-FL-name="Телефон" required />
+		</p><p>
 			<label for="mail">Эл. почта</label>
-			<input type="email" id="mail" name="E-mail" />
-		</p>
-		<p>
+			<input type="email" id="mail" name="email" data-FL-name="E-mail" />
+		</p><p>
 			<label for="comment">Комментарий</label>
-			<textarea name="Комментарий" id="comment"></textarea>
+			<textarea name="comment" id="comment" data-FL-name="Комментарий"></textarea>
+		</p><p>
+			<label for="file">Один файл</label>
+			<input type="file" name="file" id="file"></textarea>
+		</p><p>
+			<label for="files">Несколько файлов</label>
+			<input type="file" name="file[]" id="files" multiple></textarea>
 		</p>
 		<div class="FLresult"></div>
 		<button class="FLajax" data-FL-to="mail_1@mail.ru,mail_2@mail.ru" data-FL-yaM="metka" data-FL-theme="Тестирование">Отправить</button>

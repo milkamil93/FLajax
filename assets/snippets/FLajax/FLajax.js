@@ -8,9 +8,10 @@ var FLajax = {
         yaCounter47027148.reachGoal(m); // Меняем номер метрики на свои "yaCounterНОМЕР МЕТРИКИ.reachGoal(m);"
     },
     status: '.FLresult',
-    typesfield: '[type=text],[type=hidden],[type=tel],[type=email],[type=number],[type=date],[type=email],[type=range],[type=datetime],[type=url],[type=month],[type=week],[type=time],[type=datetime-local],textarea',
+    typesfield: '[type=file],[type=text],[type=hidden],[type=tel],[type=email],[type=number],[type=date],[type=email],[type=range],[type=datetime],[type=url],[type=month],[type=week],[type=time],[type=datetime-local],textarea',
     opt: {
-        required: []
+        required: [],
+        FLnames: {}
     }
 };
 
@@ -40,29 +41,33 @@ function FLsend(e) { // Функция отправки
     form = $(e).closest('form');
 
     form.find(FLajax.typesfield).each(function() {
-        var th = $(this);
+        var th = $(this),
+            type = th.attr('type'),
+            name = th.attr('name');
         if(th.attr('required') !== undefined) {
-            FLajax.opt.required.push(th.attr('name'));
             allRequired = false;
             if(th.val().length < 1) {
-                $(this).addClass('has-error');
+                th.addClass('has-error');
                 err = true;
                 form.find(FLajax.status).html(FLajax.error);
             } else {
+                if(type !== 'file') FLajax.opt.required.push(name);
                 th.removeClass('has-error');
             }
         }
+
+        if(type !== 'file') FLajax.opt.FLnames[name] = th.attr('data-FL-name'); // Добавляем имена полей в отдельный массив
     });
 
     if(allRequired) {
         form.find(FLajax.typesfield).each(function(k) {
             var th = $(this);
-            FLajax.opt.required.push(th.attr('name'));
             if (th.val().length < 1){
                 err = true;
                 th.addClass('has-error');
                 form.find(FLajax.status).html(FLajax.error);
             } else {
+                if(th.attr('type') !== 'file') FLajax.opt.required.push(th.attr('name'));
                 th.removeClass('has-error');
             }
         });
@@ -81,10 +86,12 @@ function FLsend(e) { // Функция отправки
 
     var rf = getData('FLreferrer'); // Источник трафика
     if (rf && rf.length > 0) {
-        formData.append(FLajax.referrer, rf);
+        formData.append('FLreferrer', rf);
+        FLajax.opt.FLnames['FLreferrer'] = FLajax.referrer;
     }
 
-    formData.append(FLajax.pageurl, location.href); // Страница с запросом
+    formData.append('FLpageurl', location.href); // Страница с запросом
+    FLajax.opt.FLnames['FLpageurl'] = FLajax.pageurl;
     
     var FLyaM = e.attr('data-FL-yaM');
     
@@ -96,7 +103,6 @@ function FLsend(e) { // Функция отправки
     $.ajax({
         url: '/assets/snippets/FLajax/FLajax.php',
         type: 'post',
-        dataType: 'json',
         data: formData,
         cache: false,
         contentType: false,
@@ -123,6 +129,8 @@ function FLsend(e) { // Функция отправки
                 }, 2000);
                 if (FLyaM !== undefined) FLajax.yaMetrik(FLyaM);
             }
+            
+            console.log(json);
         },
         error: function (status) {
             console.log(status);
