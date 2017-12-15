@@ -5,7 +5,7 @@ if($_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') { // если не aj
     exit;
 }
 
-//header('Content-Type: application/json');
+header('Content-Type: application/json');
 define('MODX_API_MODE', true);
 
 $config['path'] = $_SERVER['DOCUMENT_ROOT']; // работает не правильно, если включены автоподдомены (reg.ru)
