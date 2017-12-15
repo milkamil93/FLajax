@@ -129,8 +129,6 @@ function FLsend(e) { // Функция отправки
                 }, 2000);
                 if (FLyaM !== undefined) FLajax.yaMetrik(FLyaM);
             }
-            
-            console.log(json);
         },
         error: function (status) {
             console.log(status);
