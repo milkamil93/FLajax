@@ -53,7 +53,7 @@ Ajax для сниппета FormLister в Evolution CMS
 			<input type="file" name="file" id="file"></textarea>
 		</p><p>
 			<label for="files">Несколько файлов</label>
-			<input type="file" name="file[]" id="files" multiple></textarea>
+			<input type="file" name="files[]" id="files" multiple></textarea>
 		</p>
 		<div class="FLresult"></div>
 		<button class="FLajax" data-FL-to="mail_1@mail.ru,mail_2@mail.ru" data-FL-yaM="metka" data-FL-theme="Тестирование">Отправить</button>
