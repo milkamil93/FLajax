@@ -5,10 +5,11 @@ var FLajax = {
     referrer: 'Источник трафика',
     sent: 'Сообщение отправлено',
     yaMetrik: function(m){
-        yaCounter47027148.reachGoal(m); // Меняем номер метрики на свои "yaCounterНОМЕР МЕТРИКИ.reachGoal(m);"
+        // Меняем номер метрики на свои "yaCounterНОМЕР МЕТРИКИ.reachGoal(m);"
+        yaCounter47027148.reachGoal(m);
     },
     status: '.FLresult',
-    typesfield: '[type=file],[type=text],[type=hidden],[type=tel],[type=email],[type=number],[type=date],[type=email],[type=range],[type=datetime],[type=url],[type=month],[type=week],[type=time],[type=datetime-local],textarea',
+    typesfield: '[type=file],[type=checkbox],[type=radio],[type=text],[type=hidden],[type=tel],[type=email],[type=number],[type=date],[type=range],[type=datetime],[type=url],[type=month],[type=week],[type=time],[type=datetime-local],textarea,select',
     opt: {
         required: [],
         FLnames: {}
@@ -21,85 +22,102 @@ $(document).ready(function () {
         FLsend($(this));
     });
 
-    if(!getData('FLreferrer') && (document.referrer)) { // Источник трафика
+    // Источник трафика
+    if(!getData('FLreferrer') && (document.referrer)) {
         localStorage.setItem('FLreferrer', document.referrer);
     }
 });
- 
-function FLstatus(form, c, t) { // Статус отправки
+
+// Статус отправки 
+function FLstatus(form, c, t) {
     var result = form.find(FLajax.status);
     if (c && t){
-        result.html('<div class='+c+'>'+t+'</div>');			
+        result.html('<div class='+c+'>'+t+'</div>');
     } else if (!c && !t) {
         result.html('');
     }
 }
 
-function FLsend(e) { // Функция отправки
-    var err = false, 
-    allRequired = true,
-    form = $(e).closest('form');
+// Функция отправки
+function FLsend(e) {
+    var err = false,
+        allRequired = true,
+        form = $(e).closest('form');
+
+    // Функция валидации
+    function FLcheck(th, form) {
+        var type = th.attr('type');
+
+        switch (type) {
+            case "checkbox":
+            case 'radio':
+                if(form.find('[name="' + type + '"]:checked').length === 0) FLerror(th, form);
+                else th.removeClass('has-error');
+                break;
+
+            default:
+                if (th.val() === null || th.val().length < 1){
+                    FLerror(th, form);
+                } else {
+                    if(type !== 'file') FLajax.opt.required.push(th.attr('name'));
+                    th.removeClass('has-error');
+                }
+        }
+    }
+
+    // вывод ошибки
+    function FLerror(th, form) {
+        err = true;
+        th.addClass('has-error');
+        form.find(FLajax.status).html(FLajax.error);
+    }
 
     form.find(FLajax.typesfield).each(function() {
-        var th = $(this),
-            type = th.attr('type'),
-            name = th.attr('name');
+        var th = $(this);
         if(th.attr('required') !== undefined) {
             allRequired = false;
-            if(th.val().length < 1) {
-                th.addClass('has-error');
-                err = true;
-                form.find(FLajax.status).html(FLajax.error);
-            } else {
-                if(type !== 'file') FLajax.opt.required.push(name);
-                th.removeClass('has-error');
-            }
+            FLcheck(th, form);
         }
 
-        if(type !== 'file') FLajax.opt.FLnames[name] = th.attr('data-FL-name'); // Добавляем имена полей в отдельный массив
+        // Добавляем имена полей в отдельный массив
+        if(th.attr('type') !== 'file') FLajax.opt.FLnames[th.attr('name')] = th.attr('data-FL-name');
     });
 
     if(allRequired) {
-        form.find(FLajax.typesfield).each(function(k) {
-            var th = $(this);
-            if (th.val().length < 1){
-                err = true;
-                th.addClass('has-error');
-                form.find(FLajax.status).html(FLajax.error);
-            } else {
-                if(th.attr('type') !== 'file') FLajax.opt.required.push(th.attr('name'));
-                th.removeClass('has-error');
-            }
+        form.find(FLajax.typesfield).each(function() {
+            FLcheck($(this), form);
         });
     }
 
-    if(err) { 
+    if(err) {
         if(form.hasClass('cme')){
             FLstatus(form, 'error', FLajax.error);
         }
-        return false; 
+        return false;
     }
 
     FLstatus(form, 'sending', FLajax.sending);
-    
+
     var formData = new FormData(form[0]);
 
-    var rf = getData('FLreferrer'); // Источник трафика
+    // Источник трафика
+    var rf = getData('FLreferrer');
     if (rf && rf.length > 0) {
         formData.append('FLreferrer', rf);
         FLajax.opt.FLnames['FLreferrer'] = FLajax.referrer;
     }
 
-    formData.append('FLpageurl', location.href); // Страница с запросом
+    // Страница с запросом
+    formData.append('FLpageurl', location.href);
     FLajax.opt.FLnames['FLpageurl'] = FLajax.pageurl;
-    
+
     var FLyaM = e.attr('data-FL-yaM');
-    
+
     FLajax.opt.to = e.attr('data-FL-to');
     FLajax.opt.theme = e.attr('data-FL-theme');
-    
+
     formData.append('opt', JSON.stringify(FLajax.opt));
-    
+
     $.ajax({
         url: '/assets/snippets/FLajax/FLajax.php',
         type: 'post',
