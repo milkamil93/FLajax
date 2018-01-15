@@ -82,7 +82,7 @@ echo $modx->runSnippet('FormLister', [
     'api' => '1',
     'keepDefaults' => '1',
     'contentDefaults' => '{
-		"formid": ' . $formid . '
+		"formid": "' . $formid . '"
 	}',
 	'formid' => $formid,
     'protectSubmit' => '0',

@@ -49,9 +49,8 @@ function FLsend(e) {
         var type = th.attr('type');
 
         switch (type) {
-            case 'checkbox':
             case 'radio':
-                if(form.find('[name="' + type + '"]:checked').length === 0) FLerror(th, form);
+                if(form.find('[name="' + th.attr('name') + '"]:checked').length === 0) FLerror(th, form);
                 else th.removeClass('has-error');
                 break;
 
@@ -80,7 +79,9 @@ function FLsend(e) {
         }
 
         // Добавляем имена полей в отдельный массив
-        if (th.attr('type') !== 'file') FLajax.opt.FLnames[th.attr('name')] = th.is('[data-FL-name]') ? th.attr('data-FL-name') : 'name="' + th.attr('name') + '"';
+        if (th.attr('type') !== 'file')
+        FLajax.opt.FLnames[th.attr('name')] = th.is('[data-FL-name]') ? th.attr('data-FL-name') : 'name="' + th.attr('name') + '"';
+
     });
 
     if (allRequired) {
@@ -93,7 +94,7 @@ function FLsend(e) {
         if (form.hasClass('cme')){
             FLstatus(form, 'error', FLajax.error);
         }
-        return false;
+        return;
     }
 
     FLstatus(form, 'sending', FLajax.sending);
