@@ -51,13 +51,15 @@ function FLsend(e) {
         switch (type) {
             case 'radio':
                 if(form.find('[name="' + th.attr('name') + '"]:checked').length === 0) FLerror(th, form);
-                else th.removeClass('has-error');
+                else {
+                    if (type !== 'file') FLajax.opt.required.push(th.attr('name'));
+                    th.removeClass('has-error');
+                }
                 break;
 
             default:
-                if (th.val() === null || th.val().length < 1) {
-                    FLerror(th, form);
-                } else {
+                if (th.val() === null || th.val().length < 1) FLerror(th, form);
+                else {
                     if (type !== 'file') FLajax.opt.required.push(th.attr('name'));
                     th.removeClass('has-error');
                 }
@@ -68,7 +70,7 @@ function FLsend(e) {
     function FLerror(th, form) {
         err = true;
         th.addClass('has-error');
-        form.find(FLajax.status).html(FLajax.error);
+        FLstatus(form, 'error', FLajax.error);
     }
 
     form.find(FLajax.typesfield).each(function() {
