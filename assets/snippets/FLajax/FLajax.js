@@ -31,8 +31,8 @@ $(document).ready(function () {
 // Статус отправки 
 function FLstatus(form, c, t) {
     var result = form.find(FLajax.status);
-    if (c && t){
-        result.html('<div class='+c+'>'+t+'</div>');
+    if (c && t) {
+        result.html('<div class="' + c + '">' + t + '</div>');
     } else if (!c && !t) {
         result.html('');
     }
@@ -49,17 +49,17 @@ function FLsend(e) {
         var type = th.attr('type');
 
         switch (type) {
-            case "checkbox":
+            case 'checkbox':
             case 'radio':
                 if(form.find('[name="' + type + '"]:checked').length === 0) FLerror(th, form);
                 else th.removeClass('has-error');
                 break;
 
             default:
-                if (th.val() === null || th.val().length < 1){
+                if (th.val() === null || th.val().length < 1) {
                     FLerror(th, form);
                 } else {
-                    if(type !== 'file') FLajax.opt.required.push(th.attr('name'));
+                    if (type !== 'file') FLajax.opt.required.push(th.attr('name'));
                     th.removeClass('has-error');
                 }
         }
@@ -74,23 +74,23 @@ function FLsend(e) {
 
     form.find(FLajax.typesfield).each(function() {
         var th = $(this);
-        if(th.attr('required') !== undefined) {
+        if (th.attr('required') !== undefined) {
             allRequired = false;
             FLcheck(th, form);
         }
 
         // Добавляем имена полей в отдельный массив
-        if(th.attr('type') !== 'file') FLajax.opt.FLnames[th.attr('name')] = th.attr('data-FL-name');
+        if (th.attr('type') !== 'file') FLajax.opt.FLnames[th.attr('name')] = th.is('[data-FL-name]') ? th.attr('data-FL-name') : 'name="' + th.attr('name') + '"';
     });
 
-    if(allRequired) {
+    if (allRequired) {
         form.find(FLajax.typesfield).each(function() {
             FLcheck($(this), form);
         });
     }
 
-    if(err) {
-        if(form.hasClass('cme')){
+    if (err) {
+        if (form.hasClass('cme')){
             FLstatus(form, 'error', FLajax.error);
         }
         return false;
@@ -128,8 +128,8 @@ function FLsend(e) {
         success: function(json) {
             var items = form.find(FLajax.typesfield);
             items.removeClass('has-error');
-            if(json['status'] === false) {
-                if(json['errors'].length !== 0) {
+            if (json['status'] === false) {
+                if (json['errors'].length !== 0) {
                     $.each(json['errors'], function (key) {
                         items.filter('[name="' + key + '"]').addClass('has-error');
                     });
@@ -141,14 +141,14 @@ function FLsend(e) {
                 FLstatus(form, 'sent', FLajax.sent);
                 e.attr('disabled', 'disabled');
                 setTimeout(function(){
-                    if(typeof($.fancybox) !== 'undefined'){
+                    if (typeof($.fancybox) !== 'undefined'){
                         $.fancybox.close();
                     }
                 }, 2000);
                 if (FLyaM !== undefined) FLajax.yaMetrik(FLyaM);
             }
         },
-        error: function (status) {
+        error: function(status) {
             console.log(status);
         }
     });
