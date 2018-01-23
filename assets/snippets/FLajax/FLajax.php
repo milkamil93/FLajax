@@ -64,8 +64,9 @@ if(isset($opt['required'])) {
         ];
     }
 }
-unset($_POST['opt']);
 
+$formid = isset($_POST['formid']) ? $_POST['formid'] : 'basic';
+unset($_POST['opt'],$_POST['formid']);
 
 // формируем тело письма
 $report = '@CODE:<div style="background:#f7fbff;border:1px solid #e5e5e5;padding:5px 15px;">'; 
@@ -86,9 +87,9 @@ echo $modx->runSnippet('FormLister', [
     'api' => '1',
     'keepDefaults' => '1',
     'contentDefaults' => '{
-		"formid": "basic"
+		"formid": "' . $formid . '"
 	}',
-	'formid' => 'basic',
+	'formid' => $formid,
     'protectSubmit' => '0',
     'rules' => json_encode($rules, JSON_UNESCAPED_UNICODE),
 	'to' => $config['to'],
