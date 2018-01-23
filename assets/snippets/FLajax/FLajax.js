@@ -1,3 +1,8 @@
+/**
+ ***
+ *** Minify by https://github.com/milkamil93
+ ***
+ **/
 var FLajax = {
     error: '<span style="color:#ff7581;">Заполните необходимые поля</span>',
     sending: 'Идёт отправка',

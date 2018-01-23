@@ -1,4 +1,9 @@
 <?php
+/**
+ ***
+ *** Minify by https://github.com/milkamil93
+ ***
+ **/
 // если не ajax, то выдаём 404 ошибку
 if($_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') { 
     header("HTTP/1.0 404 Not Found");
