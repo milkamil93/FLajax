@@ -58,10 +58,11 @@ $config['theme'] = isset($opt['theme']) ? $opt['theme'] : $config['theme'];
 // по умолчанию все обязательно, если к конкретным полям указать "required", то только они будут обязательными
 $rules = []; 
 if(isset($opt['required'])) {
-    foreach ($opt['required'] as $item) {
+    foreach ($opt['required'] as &$item) {
         $rules[$item] = [
-            "required" => "Поле «" . $names[$item] . "» обязательно для заполнения"
+            'required' => 'Заполните поле "' . $names[$item] . '"'
         ];
+        unset($item);
     }
 }
 
@@ -70,16 +71,18 @@ unset($_POST['opt'],$_POST['formid']);
 
 // формируем тело письма
 $report = '@CODE:<div style="background:#f7fbff;border:1px solid #e5e5e5;padding:5px 15px;">'; 
-foreach ($_POST as $key => $item) {
+foreach ($_POST as $key => &$item) {
     $report .= '<p><strong>' . $names[$key] . ':</strong> [+' . $key . '.value+]<br/></p>';
+    unset($item,$key);
 }
 $report .= '</div><div style="background:#f5f5f5;border:1px solid #e5e5e5;padding:10px 15px;margin: 10px 0;">IP: ' . $_SERVER["REMOTE_ADDR"] . '</div>';
 
 $filesname = '';
 $i = 0;
-foreach ($_FILES as $key => $item) {
+foreach ($_FILES as $key => &$item) {
     ++$i;
     $filesname .= $i === count($_FILES) ? $key : $key . ',';
+    unset($item,$key);
 }
 
 echo $modx->runSnippet('FormLister', [

@@ -4,7 +4,8 @@
  ***
  **/
 var FLajax = {
-    error: '<span style="color:#ff7581;">Заполните необходимые поля</span>',
+    error: 'Заполните необходимые поля',
+    fatal_error: 'Неизвестная ошибка',
     sending: 'Идёт отправка',
     pageurl: 'Страница с запросом',
     referrer: 'Источник трафика',
@@ -52,30 +53,30 @@ function FLsend(e) {
     // Функция валидации
     function FLcheck(th, form) {
         var type = th.attr('type');
+        errorCase();
 
-        switch (type) {
+        /*switch (type) {
             case 'radio':
                 if(form.find('[name="' + th.attr('name') + '"]:checked').length === 0) FLerror(th, form);
-                else {
-                    if (type !== 'file') FLajax.opt.required.push(th.attr('name'));
-                    th.removeClass('has-error');
-                }
+                else errorCase();
                 break;
 
             default:
                 if (th.val() === null || th.val().length < 1) FLerror(th, form);
-                else {
-                    if (type !== 'file') FLajax.opt.required.push(th.attr('name'));
-                    th.removeClass('has-error');
-                }
+                else errorCase();
+        }*/
+        
+        function errorCase() {
+            if (type !== 'file') FLajax.opt.required.push(th.attr('name'));
+            //th.removeClass('has-error');
         }
     }
 
     // вывод ошибки
     function FLerror(th, form) {
-        err = true;
-        th.addClass('has-error');
-        FLstatus(form, 'error', FLajax.error);
+        //err = true;
+        //th.addClass('has-error');
+        //FLstatus(form, 'error', FLajax.error);
     }
 
     form.find(FLajax.typesfield).each(function() {
@@ -138,12 +139,18 @@ function FLsend(e) {
             items.removeClass('has-error');
             if (json['status'] === false) {
                 if (json['errors'].length !== 0) {
-                    $.each(json['errors'], function (key) {
+                    var err_log = true;
+                    $.each(json['errors'], function(key, data) {
+                        if (err_log) {
+                            FLstatus(form, 'error', data['required']);
+                            err_log = false;
+                        }
                         items.filter('[name="' + key + '"]').addClass('has-error');
                     });
-                    FLstatus(form, 'error', FLajax.error);
-                } else {
+                } else if (json['messages'].length !== 0) {
                     FLstatus(form, 'error', json['messages']);
+                } else {
+                    FLstatus(form, 'error', FLajax.fatal_error);
                 }
             } else {
                 FLstatus(form, 'sent', FLajax.sent);
