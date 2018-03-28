@@ -49,7 +49,7 @@ function FLsend(e) {
 
     // обнуление набора
     FLajax.opt.required = [];
-    FLajax.opt.FLnames = [];
+    FLajax.opt.FLnames = {};
     
     var err = false,
         allRequired = true,
