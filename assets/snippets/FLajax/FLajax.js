@@ -46,6 +46,11 @@ function FLstatus(form, c, t) {
 
 // Функция отправки
 function FLsend(e) {
+
+    // обнуление набора
+    FLajax.opt.required = [];
+    FLajax.opt.FLnames = [];
+    
     var err = false,
         allRequired = true,
         form = $(e).closest('form');
