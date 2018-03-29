@@ -1,38 +1,30 @@
 <?php
 /**
  ***
- *** Minify by https://github.com/milkamil93
+ *** Flajax by https://github.com/milkamil93
  ***
  **/
 // если не ajax, то выдаём 404 ошибку
 if($_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') { 
     header("HTTP/1.0 404 Not Found");
     exit;
-}
+} 
 
 header('Content-Type: application/json');
+
+$config = include('FLconfig.php');
+
 define('MODX_API_MODE', true);
-
-
-//$config['path'] = $_SERVER['DOCUMENT_ROOT'];
-// работает не правильно, если включены автоподдомены (reg.ru)
-$config['path'] = dirname(dirname(dirname(dirname(__FILE__)))); 
-
-include_once 'FLconfig.php';
-include_once $config['path'] . '/assets/cache/siteManager.php';
-include_once $config['path'] . '/' . MGR_DIR . '/includes/config.inc.php';
-include_once $config['path'] . '/' . MGR_DIR . '/includes/document.parser.class.inc.php';
-
-$modx = new DocumentParser;
+include_once($_SERVER['DOCUMENT_ROOT'] . '/index.php');
 $modx->db->connect();
-$modx->getSettings();
-startCMSSession();
-$modx->minParserPasses = 2;
-
+if (empty ($modx->config)) {
+    $modx->getSettings();
+}
+$modx->invokeEvent("OnWebPageInit");
 
 // получаем email из админки, если в ресурсе 1 создана TV "mailto"
 $email = $modx->getTemplateVar('mailto','*',1);
-$config['to'] = $email['value'] !== '' ? trim($email['value']) : $config['to']; 
+$config['to'] = !empty($email['value']) ? trim($email['value']) : $config['to']; 
 
 $domen = parse_url ('http://'.$_SERVER["HTTP_HOST"]);
 $domen = str_replace (['http://','www.'],'', $domen['host']);
@@ -101,4 +93,5 @@ echo $modx->runSnippet('FormLister', [
 	'reportTpl' => $report,
     'attachments' => $filesname
 ]);
+
 ?>

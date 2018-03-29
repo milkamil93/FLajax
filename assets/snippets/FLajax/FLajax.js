@@ -1,8 +1,8 @@
 /**
  ***
- *** Minify by https://github.com/milkamil93
+ *** Flajax by https://github.com/milkamil93
  ***
- **/
+ **/ 
 var FLajax = {
     error: 'Заполните необходимые поля',
     fatal_error: 'Неизвестная ошибка',
@@ -139,7 +139,7 @@ function FLsend(e) {
         cache: false,
         contentType: false,
         processData: false,
-        success: function(json) {
+        success: function(json) { console.log(json);
             var items = form.find(FLajax.typesfield);
             items.removeClass('has-error');
             if (json['status'] === false) {
